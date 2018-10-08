@@ -1,0 +1,11 @@
+{
+  "name": "Habitica-bot",
+  "version": "0.0.1",
+  "description": "TGH-Bot",
+  "main": "bot.js",
+  "author": "RDAxRoadkill",
+  "dependencies": {
+    "discord.io": "github:woor/discord.io#gateway_v6",
+    "winston": "^3.1.0"
+  }
+}
