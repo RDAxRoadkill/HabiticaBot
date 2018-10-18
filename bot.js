@@ -1,45 +1,29 @@
-var Discord = require('discord.io');
-var logger = require('winston');
+const Discord = require('discord.js');
+const client = new Discord.Client();
 var auth = require('./auth.json');
-// Configure logger settings
-logger.remove(logger.transports.Console);
-logger.add(new logger.transports.Console, { 
-    colorize: true 
+
+client.on('ready', () => {
+  console.log('Bot online!');
 });
-logger.level = 'debug';
-// Initialize Discord Bot
-var bot = new Discord.Client({
-   token: auth.token,
-   autorun: true
+
+/* Code for greeting whenever a member joins */
+client.on('guildMemberAdd', member => {
+  console.log('guyJoined!')
+  // Send the message to a designated channel on a server:
+  const channel = member.guild.channels.find(ch => ch.name === 'welcome'); //change the ch.name to whatever the channel name is
+  // Do nothing if the channel wasn't found on this server
+  if (!channel) return;
+  // Send the message, mentioning the member
+  channel.send(`Welcome ${member}! Please read our description on Habitica and tell us about yourself!`);
+
 });
-bot.on('ready', function (evt) {
-    console.log(evt);
-    logger.info('Connected');
-    logger.info('Logged in as: ');
-    logger.info(bot.username + ' - (' + bot.id + ')');
+
+//Event listener for messages
+client.on('message', message => {
+      if (message.content === 'ping') {
+        // Send "pong" to the same channel
+        message.channel.send('pong');
+      }
 });
-bot.on('message', function (user, userID, channelID, message, evt) {
-    // Our bot needs to know if it will execute a command
-    // It will listen for messages that will start with `!`
-    if (message.substring(0, 1) == '!') {
-        var args = message.substring(1).split(' ');
-        var cmd = args[0];
-       
-        args = args.splice(1);
-        switch(cmd) {
-            // !ping
-            case 'ping':
-                bot.sendMessage({
-                    to: channelID,
-                    message: 'Pong!'
-                });
-            break;
-            case 'GetDoota':
-                bot.sendMessage({
-                    to: channelID,
-                    message: 'Yay!'
-                });
-            break;
-         }
-     }
-});
+
+client.login(auth.token);
